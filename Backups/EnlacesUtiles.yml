@@ -1,0 +1,12 @@
+https://trambo-elmer.s3-us-west-2.amazonaws.com/CloudFormation/principal.yml
+aws s3 sync . s3://trambo-elmer/CloudFormation
+https://trambo-elmer.s3-us-west-2.amazonaws.com/CloudFormation
+
+
+ https://tecadmin.net/write-append-multiple-lines-to-file-linux/
+ https://techburst.io/synchronizing-aws-s3-an-overview-5eaa12934d38
+ https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-lamp-amazon-linux-2.html
+
+
+ https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/hosting-wordpress.html
+ curl https://api.wordpress.org/secret-key/1.1/salt/ >> keyexample.txt

@@ -1,0 +1,88 @@
+Description:  Template para instancias.
+
+Parameters: 
+  RefSubnetPublica: 
+    Description: "Subnet Publica"
+    Type: String
+  
+  RefSG: 
+    Description: "Security group"
+    Type: String
+  
+  RefDefaultSG:
+    Description: "Default Security group"
+    Type: String
+
+  EndpointBD:
+    Description: "Endpoint RDS"
+    Type: String
+
+  BDUSER:
+    Description: "User"
+    Type: String
+
+  BDPASS:
+    Description: "Password"
+    Type: String
+  
+  EC2TYPE:
+    Description: "Tipo EC2TYPE"
+    Type: String
+    Default: t2.micro
+
+Resources:
+  MyEC2Instance: 
+    Type: AWS::EC2::Instance
+    Properties: 
+      ImageId: "ami-0e8c04af2729ff1bb"
+      KeyName: "Key"
+      InstanceType: !Ref EC2TYPE
+      NetworkInterfaces: 
+      - AssociatePublicIpAddress: "true"
+        DeviceIndex: "0"
+        SubnetId: !Ref RefSubnetPublica
+        GroupSet: 
+          - !Ref RefSG
+          - !Ref RefDefaultSG
+      UserData:
+        Fn::Base64: 
+          !Sub |
+            #!/bin/bash
+            yum update -y
+            yum install httpd -y
+            service httpd start
+            chkconfig httpd on
+            amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2
+            wget https://wordpress.org/latest.tar.gz
+            tar -xzf latest.tar.gz
+            cd /wordpress
+            touch wp-config.php
+            cat >> wp-config.php <<EOL
+            <?php
+            define( 'DB_NAME', 'wordpress' );
+            define( 'DB_USER', '${BDUSER}' );
+            define( 'DB_PASSWORD', '${BDPASS}' );
+            define( 'DB_HOST', '${EndpointBD}' );
+            define( 'DB_CHARSET', 'utf8mb4' );
+            define( 'DB_COLLATE', '' );
+            EOL
+            curl https://api.wordpress.org/secret-key/1.1/salt/ >> wp-config.php
+            cat >> wp-config.php <<EOL
+            \$table_prefix = 'wp_';
+            define( 'WP_DEBUG', false );
+            if ( ! defined( 'ABSPATH' ) )
+            define( 'ABSPATH', dirname( __FILE__ ) . '/' );
+            require_once( ABSPATH . 'wp-settings.php' );
+            EOL
+            cat wp-config.php
+            cp -r /wordpress/* /var/www/html/
+            service httpd restart
+      Tags:
+        - Key: Name
+          Value:
+            !Join
+              - '-'
+              - - 'InstanceWP'
+                - !Ref AWS::StackName
+        - Key: Owner
+          Value: elmerreal98@gmail.com 
