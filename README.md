@@ -3,7 +3,7 @@ February 24, 2020. Create VPC using CloudFormation
 
 Exercise 5 (Cloudformation):
 This exercise consists in configure and start a MySQL database and a wordpress server using a EC2 instance.
-The templates are classified depending their kind.
+The templates are classified depending their kind (there is more detailed information about each template in their respective folder).
 
 1. [Network](/Network)
     In the nework.yml file were created all the resources needed for the VPC.
@@ -13,7 +13,7 @@ The templates are classified depending their kind.
     In the wordpress.yml file were created the EC2 instance and all the resources needed for the instance.
 
 The complete diagrama is the following:
-![alt text](/Imagenes/CloudFormation1.png)
+![alt text](./Imagenes/CloudFormation1.png)
 
 # principal.yml
 The file [principal](/principal.yml) is in charge of calls all the others templates and manage the parameters and outputs, works like a bridge because can take a ouptup of a specific template and can send as input for another one. This file is structures as following:
